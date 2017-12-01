@@ -13,10 +13,13 @@
     (testing "basic updates and deref"
       (swap! a assoc :something 1)
       (is (= {:something 1} (deref a)))
-      (is (= {:something 1} @a)))
+      (is (= {:something 1} @a)))       ; shorthand for deref
     (testing "updates"
       (swap! a update :something inc)
-      (is (= {:something 2} @a)))))
+      (is (= {:something 2} @a)))
+    (testing "setting regardless of previous value"
+      (reset! a {:something :else})
+      (is (= {:something :else} @a)))))
 
 (deftest refs
   (testing "transactions"
