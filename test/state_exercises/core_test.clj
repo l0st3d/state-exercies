@@ -28,7 +28,7 @@
           amount-to-transfer 10.0M]
       (dosync
        (alter account-1 update :balance - amount-to-transfer)
-       (alter account-2 update :balance + amount-to-transfer))
+       (alter account-2 update :balance + amount-to-transfer)) ; whole transaction completes or fails
       (is (= 90.0M (:balance @account-1)))
       (is (= 710.0M (:balance @account-2))))))
 
