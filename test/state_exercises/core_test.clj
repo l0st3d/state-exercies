@@ -219,18 +219,21 @@
       )
 
     
-    
+    ;; put 100 random strings onto input-chan
     (doseq [s (gen/sample (s/gen string?) 100)]
       (async/put! input-chan s))
 
+    ;; take as many things off the output-chan as possible, check each
+    ;; one to see if it's an even number. Also count them to make sure
+    ;; there's more than one
     (loop [c 0]
       (let [timeout (async/timeout 100)
             x       (async/alt!! output-chan ([x] x)
                                  timeout     :timeout)]
-        (if (number? x)
-          (do (is (even? x))
-              (recur (inc c)))
-          (is (> c 0)))))))
+        (if (= x :timeout)
+          (is (> c 0))
+          (do (is (and (number? x) (even? x)))
+              (recur (inc c))))))))
 
 
 (comment
@@ -266,8 +269,9 @@
   ;; - rewrite the logger to use channels instead of agents
   ;;
   ;; - use pipeline and a transducer to transform data and copy to
-  ;;   another chan, i.e. implement the pipeline test
-  ;;
-  
+  ;;   another chan, i.e. implement the pipeline test. You can run
+  ;;   only that test at the repl with:
 
+  (t/test-vars [#'pipeline])
+  
   )
