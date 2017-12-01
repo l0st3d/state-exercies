@@ -41,7 +41,7 @@
       (dotimes [n 10]
         (send a incr))
       (prn 'messages 'sent)
-      (await-for 10000 a)
+      (await-for 10000 a)               ; wait for agent to process all functions
       (is (= 11 (:c @a)))))
   (testing "errors"
     (let [a (agent {:c 1})
