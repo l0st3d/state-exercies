@@ -1,0 +1,3 @@
+* State Exercises
+Look in [[file:test/state_exercises/core_test.clj::(comment][core_test.clj]]. There are some tests, and instructions on
+running them, and tasks at the bottom.
