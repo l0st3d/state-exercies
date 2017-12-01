@@ -66,6 +66,14 @@
 
 (def ^:dynamic *dynamic-var* ::global-state)
 
+(defn dynamic-scope-1 []
+  (prn 'dynamic-scope-1 '>> *dynamic-var*)
+  *dynamic-var*)
+
+(defn dynamic-scope-2 []
+  (binding [*dynamic-var* ::dynamic-scope-2]
+    (dynamic-scope-1)))
+
 (deftest vars
   (testing "localised changes"
     (is (= ::global-state *dynamic-var*))
@@ -74,13 +82,18 @@
       (is (= ::local-state *dynamic-var*)))
     (testing "from a different thread"
       (-> (fn []
-            (binding [*dynamic-var* ::thread-local-state]
+            (binding [*dynamic-var* ::thread-local-state] ; dynamic scope at work
               (Thread/sleep 100)
               (prn '> 'state 'on (Thread/currentThread) *dynamic-var*)
               (Thread/sleep 1000)
               (is (= ::thread-local-state *dynamic-var*))))
           Thread. .start)
-      (prn '> 'state 'on (Thread/currentThread) *dynamic-var*))))
+      (prn '> 'state 'on (Thread/currentThread) *dynamic-var*)
+      ;; wait for the thread to complete
+      (Thread/sleep 2000)))
+  (testing "be careful with dynamic scope"
+    (is (= ::global-state (dynamic-scope-1)))
+    (is (= ::dynamic-scope-2 (dynamic-scope-2)))))
 
 (deftest validators
   (testing "atom validator"
