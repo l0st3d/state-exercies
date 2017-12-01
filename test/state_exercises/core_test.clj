@@ -284,12 +284,19 @@
   ;;   unco-ordinated, dynamyic and isolated changes going on. Try to
   ;;   apply labels to the different reference types.
   ;;
-  ;; - put the classes data structure from week 3 in an atom and write
-  ;;   functions to
+  ;; - put the classes data structure from week 3:
+
+  [["9310" "Fundamentals of Programming"          "10:00" 1]
+   ["521"  "Programming for Beginners"            "10:00" 1]
+   ["9306" "Networking and Server Administration" "14:00" 2]
+   ["310"  "Fundamentals of Programming"          "15:00" 1]]
+  
+  ;;   in an atom and write functions to
   ;;   - store add a new class
   ;;   - find all classes in a room
-  ;;   - find all classes on at a time
   ;;   - find all classes for a given course
+  ;;   - how would you restructure the data to make it easier to
+  ;;     answer these sorts of questions?
   ;;
   ;; - rewrite the logger to use channels instead of agents
   ;;
