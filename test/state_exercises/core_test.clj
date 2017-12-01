@@ -50,10 +50,19 @@
                 (throw (ex-info "Error Processing" {:agent-state a :message "Error"})))]
       (send a err)
       (Thread/sleep 1000)
-      (is (= "Error" (some-> a agent-error ex-data :message)))
-      (is (thrown? Exception (send a err)))
-      (restart-agent a {:c 0})
-      (is (= @a {:c 0})))))
+      (is (= "Error" (some-> a agent-error ex-data :message))) ; can get the error
+      (is (thrown? Exception (send a err))) ; agent is in a broken state and won't accept new messages
+      (restart-agent a {:c 0})              ; 'fix' the agent
+      (is (= @a {:c 0}))))
+  (testing "agents interaction with dosync blocks"
+    (let [r (ref 0)
+          a (agent :not-done-yet)]
+      (dosync
+       (ref-set r 1)
+       (send a (constantly :done-now))  ; message not sent until the transaction commits
+       (is (= :not-done-yet @a)))
+      (await-for 1000 a)
+      (is (= :done-now @a)))))
 
 (def ^:dynamic *dynamic-var* ::global-state)
 
